@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Розклад ігор</title>
+</head>
+<body>
+<h1>Розклад матчів</h1>
+
+<form th:action="@{/games}" method="get">
+    <label>Назва команди:</label>
+    <input type="text" name="teamName" th:value="${teamName}">
+    <button type="submit">Пошук</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Команда-дома</th>
+        <th>Команда-в гостях</th>
+        <th>Дата</th>
+        <th>Результат</th>
+    </tr>
+    <tr th:each="game : ${games}">
+        <td th:text="${game.homeTeam.name}"></td>
+        <td th:text="${game.awayTeam.name}"></td>
+        <td th:text="${#temporals.format(game.gameTime, 'dd.MM.yyyy HH:mm')}"></td>
+        <td th:text="${game.result != null ? game.result.getScore() : '- : -'}">-</td>
+    </tr>
+</table>
+
+
+</body>
+</html>
