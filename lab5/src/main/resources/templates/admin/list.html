@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <meta charset="UTF-8">
+    <title>Адмін-панель</title>
+</head>
+<body>
+<div class="header">
+
+    <div class="logo">
+        <i class="fas fa-futbol logo-icon"></i>
+        <span class="logo-text">Футбольний розклад</span>
+    </div>
+    <nav class="nav-menu">
+        <a href="/games" class="nav-link">
+            <i class="fas fa-calendar"></i>
+            Розклад
+        </a>
+        <a href="/admin/games" class="nav-link active">
+            <i class="fas fa-cog"></i>
+            Адмін-панель
+        </a>
+    </nav>
+</div>
+<div class="container">
+    <h1>Управління іграми</h1>
+
+    <div class="action-bar">
+        <a th:href="@{/games/new}" class="btn add-game-button">
+            <i class="fas fa-plus"></i>
+            Додати нову гру
+        </a>
+    </div>
+    <div class="table-wrapper" th:unless="${#lists.isEmpty(games)}">
+        <table>
+            <thead>
+            <tr>
+                <th><i class="fas fa-home"></i> Домашня команда</th>
+                <th><i class="fas fa-plane"></i> Гостьова команда</th>
+                <th><i class="fas fa-calendar"></i> Дата</th>
+                <th><i class="fas fa-futbol"></i> Результат</th>
+                <th><i class="fas fa-tools"></i> Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="game : ${games}">
+                <td th:text="${game.homeTeam.name}"></td>
+                <td th:text="${game.awayTeam.name}"></td>
+                <td th:text="${#temporals.format(game.gameTime, 'dd.MM.yyyy HH:mm')}"></td>
+
+                <td th:switch="${game.result}">
+                    <span th:case="null" class="badge badge-secondary">
+                        Не введено
+                    </span>
+                    <span th:case="*" class="badge badge-success"
+                          th:text="${game.result.score}">
+                    </span>
+                </td>
+                <td class="action-buttons">
+                    <a th:href="@{/games/result/{id}(id=${game.id})}"
+                       class="btn btn-small result-block">
+                        <i class="fas fa-edit"></i>
+                        Результат
+                    </a>
+                    <a th:href="@{/games/delete/{id}(id=${game.id})}"
+                       class="btn btn-small delete-block"
+                       onclick="return confirm('Видалити гру?')">
+                        <i class="fas fa-trash"></i>
+                        Видалити
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(games)}" class="empty-state">
+        <p>Немає жодної гри в системі</p>
+
+    </div>
+</div>
+</body>
+</html>

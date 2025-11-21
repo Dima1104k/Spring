@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{css/schedule.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <meta charset="UTF-8">
+    <title>Розклад ігор</title>
+</head>
+<body>
+<div class="header">
+
+    <div class="logo">
+        <i class="fas fa-futbol logo-icon"></i>
+        <span class="logo-text">Футбольний розклад</span>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="@{/games}" class="nav-link active">
+            <i class="fas fa-calendar"></i>
+            Розклад
+        </a>
+        <a th:href="@{/admin/games}" class="nav-link">
+            <i class="fas fa-cog"></i>
+            Адмін-панель
+        </a>
+    </nav>
+</div>
+<div class="container">
+    <h1>Розклад матчів для: <span th:text="${teamName ?: 'всіх команд'}"></span></h1>
+    <form th:action="@{/games}" method="get" class="search-form">
+        <label>Назва команди:</label>
+        <input type="text" name="teamName" th:value="${teamName}" placeholder="Введіть назву команди..."/>
+        <button type="submit">
+            <i class="fa fa-search"></i> Знайти
+        </button>
+    </form>
+
+
+    <div class="table-wrapper" th:unless="${#lists.isEmpty(games)}">
+        <table>
+            <thead>
+            <tr>
+                <th><i class="fas fa-home"></i> Команда-дома</th>
+                <th><i class="fas fa-plane"></i> Команда-в гостях</th>
+                <th><i class="fas fa-calendar"></i> Дата</th>
+                <th><i class="fas fa-futbol"></i> Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="game : ${games}">
+                <td th:text="${game.homeTeam.name}"></td>
+                <td th:text="${game.awayTeam.name}"></td>
+                <td th:text="${#temporals.format(game.gameTime, 'dd.MM.yyyy HH:mm')}"></td>
+                <td>
+                    <span th:if="${game.result != null}" class="result"
+                          th:text="${game.result.score}">
+
+                    </span>
+                    <span th:unless="${game.result != null}"
+                          class="no-result">Немає результату
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p th:if="${#lists.isEmpty(games)}" class="no-games">Немає ігор за вашим запитом</p>
+</div>
+</body>
+
+</html>
